@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="GolBet.Entities/GolBet.Entities.csproj" />
+  <Project Path="GolBet.Repositories/GolBet.Repositories.csproj" />
+  <Project Path="GolBet.Services/GolBet.Services.csproj" />
+  <Project Path="GolBet.Web/GolBet.Web.csproj" />
+</Solution>
