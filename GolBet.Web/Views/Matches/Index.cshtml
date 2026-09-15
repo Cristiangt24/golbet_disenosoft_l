@@ -5,6 +5,27 @@
 @{
     ViewData["Title"] = "Partidos";
 }
+@{
+    var current = (MatchStatus?)ViewBag.CurrentStatus;
+}
+<div class="d-flex gap-2 flex-wrap mb-4">
+    <a asp-action="Index"
+       class="btn btn-sm @(current is null ? "btn-success" : "btn-outline-success")">
+        Todos
+    </a>
+    <a asp-action="Index" asp-route-status="@MatchStatus.Scheduled"
+       class="btn btn-sm @(current == MatchStatus.Scheduled ? "btn-success" : "btn-outline-success")">
+        Programados
+    </a>
+    <a asp-action="Index" asp-route-status="@MatchStatus.InProgress"
+       class="btn btn-sm @(current == MatchStatus.InProgress ? "btn-success" : "btn-outline-success")">
+        En juego
+    </a>
+    <a asp-action="Index" asp-route-status="@MatchStatus.Finished"
+       class="btn btn-sm @(current == MatchStatus.Finished ? "btn-success" : "btn-outline-success")">
+        Finalizados
+    </a>
+</div>
 
 <h2 class="mb-4">⚽ Cartelera de partidos</h2>
 
@@ -79,6 +100,11 @@
                             </div>
                         </div>
                     </div>
+                    <a asp-action="Detail" asp-route-id="@match.Id"
+                       class="btn btn-sm btn-outline-secondary w-100 mt-2">
+                        Ver detalle
+                    </a>
+
                 </div>
             </div>
         </div>
