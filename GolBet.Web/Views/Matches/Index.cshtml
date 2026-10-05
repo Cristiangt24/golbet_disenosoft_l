@@ -27,7 +27,11 @@
     </a>
 </div>
 
-<h2 class="mb-4">⚽ Cartelera de partidos</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>⚽ Cartelera de partidos</h2>
+    <a asp-action="Create" class="btn btn-success">+ Nuevo partido</a>
+</div>
+
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
     @foreach (var match in Model)
@@ -72,7 +76,7 @@
                         </div>
 
                         <div class="w-100">
-                            <img src="@(match.AwayTeamCrestUrl ?? "https://placehold.co/60x60?text=⚽")"
+                            <img src="@(match.AwayTeamCrestUrl ?? "https://placehold.co/60x60/e9ecef/6c757d?text=FC⚽")"
                                  alt="@match.AwayTeamName" width="60" height="60" class="mb-1" />
                             <div class="fw-bold small">@match.AwayTeamName</div>
                         </div>

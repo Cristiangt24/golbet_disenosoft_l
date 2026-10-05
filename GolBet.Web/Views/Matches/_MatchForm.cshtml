@@ -1,0 +1,51 @@
+﻿@* GolBet.Web/Views/Matches/_MatchForm.cshtml *@
+@model GolBet.Services.DTOs.MatchFormDto
+
+<form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" method="post" class="col-lg-7">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="HomeTeamId" class="form-label"></label>
+            <select asp-for="HomeTeamId" asp-items="ViewBag.Teams" class="form-select">
+                <option value="">— Seleccione —</option>
+            </select>
+            <span asp-validation-for="HomeTeamId" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="AwayTeamId" class="form-label"></label>
+            <select asp-for="AwayTeamId" asp-items="ViewBag.Teams" class="form-select">
+                <option value="">— Seleccione —</option>
+            </select>
+            <span asp-validation-for="AwayTeamId" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Date" class="form-label"></label>
+        <input asp-for="Date" type="datetime-local" class="form-control" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label asp-for="HomeOdds" class="form-label"></label>
+            <input asp-for="HomeOdds" class="form-control" />
+            <span asp-validation-for="HomeOdds" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="DrawOdds" class="form-label"></label>
+            <input asp-for="DrawOdds" class="form-control" />
+            <span asp-validation-for="DrawOdds" class="text-danger"></span>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label asp-for="AwayOdds" class="form-label"></label>
+            <input asp-for="AwayOdds" class="form-control" />
+            <span asp-validation-for="AwayOdds" class="text-danger"></span>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>

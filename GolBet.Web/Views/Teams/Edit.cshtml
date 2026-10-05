@@ -1,0 +1,12 @@
+﻿@* Views/Teams/Edit.cshtml *@
+@model GolBet.Services.DTOs.TeamFormDto
+@{
+    ViewData["Title"] = "Editar equipo";
+}
+
+<h2 class="mb-4">Editar equipo</h2>
+<partial name="_TeamForm" model="Model" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,28 @@
+﻿@* GolBet.Web/Views/Teams/_TeamForm.cshtml *@
+@model GolBet.Services.DTOs.TeamFormDto
+
+<form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" method="post" class="col-lg-6">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="City" class="form-label"></label>
+        <input asp-for="City" class="form-control" />
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CrestUrl" class="form-label"></label>
+        <input asp-for="CrestUrl" class="form-control" placeholder="https://..." />
+        <span asp-validation-for="CrestUrl" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>
