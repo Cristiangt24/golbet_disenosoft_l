@@ -28,8 +28,11 @@
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>⚽ Cartelera de partidos</h2>
+  <h2>⚽ Cartelera de partidos</h2>
+  @if (User.IsInRole("Admin"))
+  {
     <a asp-action="Create" class="btn btn-success">+ Nuevo partido</a>
+  }
 </div>
 
 

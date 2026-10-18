@@ -1,4 +1,38 @@
-﻿@page
-@model GolBet.Web.Views.Shared._LoginPartialModel
-@{
-}
+﻿@* GolBet.Web/Views/Shared/_LoginPartial.cshtml *@
+@using GolBet.Entities
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+ 
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var appUser = await UserManager.GetUserAsync(User);
+ 
+        <li class="nav-item">
+            <span class="nav-link text-white">
+                👤 @appUser!.FullName
+                @if (!User.IsInRole("Admin"))
+                {
+                    <span class="badge bg-warning text-dark ms-1">
+                        💰 @appUser.Balance.ToString("N0") FutCoins
+                    </span>
+                }
+            </span>
+        </li>
+        <li class="nav-item">
+            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                <button type="submit" class="btn btn-link nav-link">Cerrar sesión</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Login">Iniciar sesión</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Register">Registrarse</a>
+        </li>
+    }
+</ul>
