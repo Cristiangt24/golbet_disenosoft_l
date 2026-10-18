@@ -25,7 +25,7 @@ public class MatchesController : Controller
     // GET /Matches?search=nacional&status=Scheduled                                    //Remplazamos el método Index para que reciba un parámetro de tipo MatchStatus y otro de tipo string, ambos opcionales. Esto nos permitirá filtrar los partidos por estado y por búsqueda de texto en la vista.
     public async Task<IActionResult> Index(MatchStatus? status, string? search)
     {
-        ViewBag.CurrentStatus = status;
+        ViewBag.CurrentStatus = status;     
         ViewBag.CurrentSearch = search;
         var board = await _matchService.GetBoardAsync(status, search);
         return View(board);
