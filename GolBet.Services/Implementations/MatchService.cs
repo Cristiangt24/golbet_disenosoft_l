@@ -2,6 +2,7 @@
 using GolBet.Entities;
 using GolBet.Entities.Enums;
 using GolBet.Repositories.Interface;
+using GolBet.Repositories.Interfaces;
 using GolBet.Services.DTOs;
 using GolBet.Services.Helpers;
 using GolBet.Services.Interfaces;
@@ -12,10 +13,13 @@ public class MatchService : IMatchService
 {
     private readonly IMatchRepository _matchRepository;
     private readonly IMapper _mapper;
+    private readonly IBetRepository _betRepository;      // nuevo 
 
-    public MatchService(IMatchRepository matchRepository, IMapper mapper)
+
+    public MatchService(IMatchRepository matchRepository, IBetRepository betRepository, IMapper mapper)
     {
         _matchRepository = matchRepository;
+        _betRepository = betRepository;
         _mapper = mapper;
     }
 
@@ -76,6 +80,137 @@ public class MatchService : IMatchService
             throw new InvalidOperationException(
                 "La fecha del partido debe ser futura.");
     }
+
+    public async Task StartMatchAsync(int id)
+
+    {
+
+        var match = await _matchRepository.GetByIdAsync(id)
+
+            ?? throw new KeyNotFoundException($"Match {id} not found.");
+
+
+
+        if (match.Status != MatchStatus.Scheduled)
+
+            throw new InvalidOperationException(
+
+                "Solo un partido programado puede iniciarse.");
+
+
+
+        match.Status = MatchStatus.InProgress;   // betting closes (rule #1 reads this) 
+
+        await _matchRepository.UpdateAsync(match);
+
+    }
+
+
+
+    public async Task<ResolutionSummaryDto> CloseMatchAsync(MatchResultFormDto dto)
+
+    {
+
+        var match = await _matchRepository.GetByIdAsync(dto.MatchId)
+
+            ?? throw new KeyNotFoundException($"Match {dto.MatchId} not found.");
+
+
+
+        // State machine guards (first idempotence belt) 
+
+        if (match.Status == MatchStatus.Finished)
+
+            throw new InvalidOperationException(
+
+                "Este partido ya fue cerrado y sus apuestas resueltas.");
+
+
+
+        if (match.Status != MatchStatus.InProgress)
+
+            throw new InvalidOperationException(
+
+                "El partido debe estar «En juego» para cerrarse. Inícialo primero.");
+
+
+
+        // 1. Record the final score and the new state 
+
+        match.HomeGoals = dto.HomeGoals;
+
+        match.AwayGoals = dto.AwayGoals;
+
+        match.Status = MatchStatus.Finished;
+
+
+
+        // 2. Compute the winning pick from the score 
+
+        var winningPick = GetWinningPick(dto.HomeGoals, dto.AwayGoals);
+
+
+
+        // 3. Resolve every PENDING bet (second idempotence belt: only Pending arrive) 
+
+        var pendingBets = await _betRepository.GetPendingByMatchAsync(match.Id);
+
+        var summary = new ResolutionSummaryDto { ResolvedBets = pendingBets.Count };
+
+
+
+        foreach (var bet in pendingBets)
+
+        {
+
+            if (bet.Pick == winningPick)
+
+            {
+
+                bet.Status = BetStatus.Won;
+
+                var payout = bet.Amount * bet.OddsAtPlacement;   // FROZEN odds pay 
+
+                bet.User.Balance += payout;                      // the win lands 
+
+                summary.WonBets++;
+
+                summary.TotalPaid += payout;
+
+            }
+
+            else
+
+            {
+
+                bet.Status = BetStatus.Lost;   // stake was deducted at placement 
+
+            }
+
+        }
+
+
+
+        // 4. ONE save: the match, every bet and every balance — ONE transaction 
+
+        await _matchRepository.UpdateAsync(match);
+
+
+
+        return summary;
+
+    }
+
+
+
+    private static BetPick GetWinningPick(int homeGoals, int awayGoals)
+
+        => homeGoals > awayGoals ? BetPick.Home
+
+         : homeGoals < awayGoals ? BetPick.Away
+
+         : BetPick.Draw;
+
 
 
 }

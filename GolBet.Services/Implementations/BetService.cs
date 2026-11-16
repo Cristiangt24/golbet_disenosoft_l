@@ -13,6 +13,7 @@ public class BetService : IBetService
 
 {
 
+
     private readonly IBetRepository _betRepository;
 
     private readonly IMatchRepository _matchRepository;
@@ -44,6 +45,7 @@ public class BetService : IBetService
         _mapper = mapper;
 
     }
+
 
 
 
@@ -146,11 +148,7 @@ public class BetService : IBetService
         await _betRepository.AddAsync(bet);   // SaveChangesAsync happens here 
 
     }
-
-
-
     public async Task<IEnumerable<BetDto>> GetMyBetsAsync(string userId)
 
         => _mapper.Map<IEnumerable<BetDto>>(await _betRepository.GetByUserAsync(userId));
-
 }

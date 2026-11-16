@@ -1,0 +1,112 @@
+﻿@* GolBet.Web/Views/Matches/Close.cshtml *@ 
+
+@model GolBet.Services.DTOs.MatchResultFormDto
+
+@{
+
+    var match = (GolBet.Services.DTOs.MatchDetailDto)ViewBag.Match;
+
+    ViewData["Title"] = "Cerrar partido";
+
+}
+
+  
+
+<nav aria-label="breadcrumb">
+
+    <ol class="breadcrumb">
+
+        <li class="breadcrumb-item"><a asp-action="Index">Partidos</a></li>
+
+        <li class="breadcrumb-item">
+
+            <a asp-action="Detail" asp-route-id="@match.Id">
+
+                @match.HomeTeamName vs @match.AwayTeamName
+
+            </a>
+
+        </li>
+
+        <li class="breadcrumb-item active">Cerrar</li>
+
+    </ol>
+
+</nav>
+
+  
+
+<div class="col-lg-6">
+
+    <h2 class="mb-1">Cerrar partido</h2>
+
+    <p class="text-muted mb-4">
+
+        Registra el marcador final. Al guardar, las apuestas pendientes se
+
+        resuelven y los ganadores reciben su pago. Esta acción no se puede deshacer.
+
+    </p>
+
+  
+
+    <form asp-action="Close" method="post">
+
+        <input type="hidden" asp-for="MatchId" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+  
+
+        <div class="row">
+
+            <div class="col-6 mb-3">
+
+                <label class="form-label fw-bold">@match.HomeTeamName</label>
+
+                <input asp-for="HomeGoals" type="number" min="0" max="99"
+                       class="form-control form-control-lg text-center" />
+
+                <span asp-validation-for="HomeGoals" class="text-danger"></span>
+
+            </div>
+
+            <div class="col-6 mb-3">
+
+                <label class="form-label fw-bold">@match.AwayTeamName</label>
+
+                <input asp-for="AwayGoals" type="number" min="0" max="99"
+                       class="form-control form-control-lg text-center" />
+
+                <span asp-validation-for="AwayGoals" class="text-danger"></span>
+
+            </div>
+
+        </div>
+
+  
+
+        <button type="submit" class="btn btn-danger"
+                onclick="return confirm('¿Cerrar el partido y resolver las apuestas? No se puede deshacer.');">
+
+            Cerrar y resolver apuestas
+
+        </button>
+
+        <a asp-action="Detail" asp-route-id="@match.Id" class="btn btn-outline-secondary">
+
+            Cancelar
+
+        </a>
+
+    </form>
+
+</div>
+
+  
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

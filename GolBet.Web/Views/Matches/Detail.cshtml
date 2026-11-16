@@ -267,7 +267,35 @@
 
         {
 
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Editar</a>
+            <div>
+
+                @if (Model.Status == MatchStatus.Scheduled)
+
+                {
+
+                    <a asp-action="Edit" asp-route-id="@Model.Id"
+                       class="btn btn-outline-primary">Editar</a>
+
+                    <form asp-action="Start" asp-route-id="@Model.Id" method="post"
+                          class="d-inline"
+                          onsubmit="return confirm('¿Iniciar el partido? Las apuestas quedarán cerradas.');">
+
+                        <button type="submit" class="btn btn-warning">Iniciar partido</button>
+
+                    </form>
+
+                }
+
+                else if (Model.Status == MatchStatus.InProgress)
+
+                {
+
+                    <a asp-action="Close" asp-route-id="@Model.Id"
+                       class="btn btn-danger">Cerrar partido</a>
+
+                }
+
+            </div>
 
         }
 
